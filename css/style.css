@@ -7,34 +7,30 @@ Purple (visited links): #D699B6
 Green (accent): #A7C080
 Yellow: #DBBC7F
 */
-html {
+*{
 box-sizing: border-box;
-max-width: 780px;
+}
+
+html{
 font-family: charter, Cambria, serif;
 background: #32302F;
 color: #D3C6AA;
-font-size: 20px;
+font-size: 22px;
 line-height: 1.3;
-margin: auto;
-}
-
-root {
-margin: 25px 25px 25px 25px;
-
-}
-
-body {
-margin: 25px 25px 25px 25px;
-}
-
-p {
 text-align: left;
-margin: 0.7em 0 0 0;
+display: block;
+position: static;
+margin: auto;
+max-width: 1000px;
 }
 
-img {
-margin-top: 30px;
-margin-bottom: 30px;
+h1{
+font-size: 23px;
+font-weight: bold;
+}
+h2{
+font-size: 21px;
+font-weight: bold;
 }
 
 a{
@@ -42,53 +38,109 @@ font-style: italic;
 text-decoration: none;
 color: #7FBBB3
 }
-a:visited {
+a:visited{
   color: #D699B6;
 }
-a:hover {
+a:hover{
   color: #A7C080;
 }
-a:active {
+a:active{
   color: #DBBC7F;
-}  
+} 
 
-h1 {
-font-size: 21px;
-font-weight: bold;
-}
-h2 {
-font-size: 19px;
-font-weight: bold;
+p{
+margin: 0 0 0.7em 0;
 }
 
-footer {
-margin-top: 80px;
+article{
+margin-bottom: 40px;
+float: left;
+max-width: 850px;
+margin: auto;
+}
+
+img{
+max-width: 100%;
+margin-top: 30px;
 margin-bottom: 30px;
 }
 
-article {
-margin: 20px 0 20px 0;
-float: left;
-width: 760px;
+nav{
+font-size: 30px;
 }
 
-hr {
-height: 0px;
+.filter{
+filter: invert(81%) sepia(10%) saturate(571%) hue-rotate(3deg) brightness(102%) contrast(80%);
 }
 
-.headline {
-font-size: 40px;
-}
-.indent {
-margin-left: 0.5em;
-}
-.large {
-width: 100%;
+.wrapper {
+  max-width: 1024px;
+  margin: 0 auto;
+  grid-gap: 10px;
 }
 
-@media (max-width: 600px) {
-nav, article {
-width: 100%;
-height: auto;
+.wrapper > * {
 }
+
+.main-head {
+  grid-area: header;
+  font-size: 50px;
+  font-weight: bold;
+  align-items: end;
+  display: grid;
+  margin-top: 50px;
 }
+.content {
+  grid-area: content;
+  max-width: 800px;
+}
+.main-nav {
+  grid-area: nav;
+}
+.side {
+grid-area: sidebar;
+text-align: left;
+}
+.main-footer {
+  grid-area: footer;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-areas:
+    "header"
+    "nav"
+    "content"
+    "sidebar"
+    "footer";
+}
+
+@media (min-width: 800px) {
+  .wrapper {
+    grid-template-columns: 1fr 4fr;
+    grid-template-areas:
+      "top-left     header"
+      "sidebar      nav"
+      "sidebar      content"
+      "bottom-left  footer";
+  }
+  .side {
+    grid-area: sidebar;
+    text-align: right;
+}
+/*
+@media (min-width: 1000px) {
+  .wrapper {
+    grid-template-columns: 1fr 4fr 1fr;
+    grid-template-areas:
+      "top-left header      header"
+      "nav      content     sidebar"
+      "nav      content     sidebar"
+      "footer   footer      footer";
+  }
+}
+  nav ul {
+    flex-direction: column;
+  }
+}
+*/
