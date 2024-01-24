@@ -6,20 +6,16 @@
 <description>Personal blog of whimsical stories</description>
 
 <item>
-<<<<<<< HEAD
-=======
 <title>Blog #6: Complete Redesignt</title>
 <link>https://www.haydenshuker.com/articles/b6.html</link>
 </item>
 
 <item>
->>>>>>> 761294785bad7209160bda25dcec0164034ede15
 <title>Blog #5: STEM Meat</title>
 <link>https://www.haydenshuker.com/articles/b5.html</link>
 <description>I’m now a registered mechanical engineering major.</description>
 </item>
 
-<<<<<<< HEAD
 <item>
 <title>Blog #6: Complete Redesign</title>
 <link>https://www.haydenshuker.com/articles/b6.html</link>
@@ -31,8 +27,19 @@
 <description>Writing is bleeding onto the page and I have low iron.</description>
 </item>
 
-=======
->>>>>>> 761294785bad7209160bda25dcec0164034ede15
+<item>
+<title>Update #7: Giga Content Drop</title>
+<link>https://www.haydenshuker.com/index.html</link>
+<description>
+<p><time datetime="2024-1-23">January 23, 2024</time></p>
+<p>I was working on differential equations and they had this tutorial video so <a href="downloads/given-initial-conditions.flac">I made it awesome</a>. Hope you like it!</p>
+<ul>
+<li>Updated <a href="articles/software.html">software recomendations</a> with hate and negitivity</li>
+<li>Updated <a href="articles/links.html">links</a> with hate and negitivity</li>
+</ul>
+</description>
+</item>
+
 </channel>
 </rss>
 
