@@ -101,13 +101,14 @@ margin: 0 0 0.7em 0;
 box-sizing: border-box;
 }
 .headline{
-font-size: 50px;
+font-size: 40px;
 }
 
 
 .wrapper {
 max-width: 1024px;
 margin: 0 auto;
+padding-right: 30px;
 }
 .wrapper > * {
 }
@@ -118,6 +119,8 @@ margin: 0 auto;
     padding-bottom: 10px;
     font-weight: bold;
     padding-left: 15px;
+    max-width: 20vw;
+    
     }
     .content {
     grid-area: content;
@@ -145,6 +148,11 @@ margin: 0 auto;
     size: 20vw;
     padding-left: 5vw;
     padding-right: 75vw;
+    grid-area: top-left;
+    margin: 0;
+    background-color: #D3C6AA;
+    padding-left: 0px;
+    background-clip: content-box;
     }
     .wrapper {
     display: grid;
@@ -164,6 +172,7 @@ margin: 0 auto;
     "top-left   nav"
     "header     content"
     "sidebar    content"
+    "sidebar    content"
     "footer     footer";
     }
     .wrapper > * {
@@ -180,6 +189,9 @@ margin: 0 auto;
     margin: 0;
     background-color: #D3C6AA;
     background-clip: content-box;
-    padding: 0;
+    padding-right: 30px;
+    }
+    .content{
+    min-width:400px
     }
 }
