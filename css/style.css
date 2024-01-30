@@ -119,13 +119,14 @@ padding-right: 30px;
     padding-bottom: 10px;
     font-weight: bold;
     padding-left: 15px;
-    max-width: 20vw;
+    max-width: 30vw;
     
     }
     .content {
     grid-area: content;
     max-width: 800px;
     padding-left: 15px;
+    padding-top: 15px;
     }
     .main-nav {
     grid-area: nav;
@@ -165,7 +166,7 @@ padding-right: 30px;
     "footer";
     }
 
-@media (min-width: 600px) {
+@media (min-width: 800px) {
     .wrapper {
     grid-template-columns: 1fr 4fr;
     grid-template-areas:
