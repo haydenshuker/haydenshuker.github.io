@@ -1,7 +1,7 @@
 html{
 font-family: charter, Cambria, serif;
-background: white;
-color: black;
+background: #333333;
+color: #cccccc;
 font-size: 22px;
 line-height: 1.3;
 text-align: left;
@@ -39,16 +39,16 @@ margin-bottom: 8px;
 a{
 font-style: italic;
 text-decoration: none;
-color: black;
+color: #cccccc;
 }
 a:visited{
-color: black;
+color: #cccccc;
 }
 a:hover{
-color: darkolivegreen;
+color: #ccFFcc;
 }
 a:active{
-color: tomato;
+color: #FFcccc;
 }
 p > a:after{
 content: "°";
