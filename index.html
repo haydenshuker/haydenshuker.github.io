@@ -1,51 +1,560 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<base href = "..">
+<base href = ".">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="css/style.css">
 <link rel="icon" type="image/x-icon" href="images/kijetesantakalu.jpg"> 
-<title>Hayden Shuker, Hayden Shuker</title>
+<title>Hayden Shuker</title>
 </head>
 <body>
 <nav class="prime-nav">
 <ul>
 <li><a href="index.html">Home</a></li>
-<li><a href="blog.html">Blog</a></li>
 <li><a href="links.html">Links</a></li>
 <li><a href="archive.html">Archive</a></li>
-<li><a href="rss.xml">RSS</a></li>
+<li><a href="store.html">Store</a></li>
 </ul>
 </nav>
+<hr>
 <main>
 <article>
 <heading style="flex:3; padding-top: 20px;">
-<img src="images/jan-enson.webp" alt="jan enson" style="padding-top: 40px">
+<img src="images/jan-enson.webp" alt="jan enson" style="margin-top: 0px">
 <h1>Hayden Shuker</h1>
 <p>Philadelphia, PA<br>
 Reading, PA</p>
 </heading>
+<section>
+<p>I am a sophomore mechanical engineering student at Temple University. All code here is artisanal and handcrafted. I have no analytics, trackers, cookies, javascript, SEO or ads.</p>
+</section>
+</article>
+<hr>
+<article>
+<heading>
+<h2 class='headline'>I Made A Website Builder</h2>
+<p><time datetime='2024-07-25'>July 15th, 2024</time></p>
+<p>This will be the first article posted with it.</p>
+</heading>
+<section>
+<h3>Summery/Objective/Background</h3>
+<p>Over the past three seasons, I built this website from the most minimal form. My process was very manual. This website is made of only <a href='https://en.wikipedia.org/wiki/Static_web_page'>static web pages</a>. It is a pile of documents stored on GitHub servers and downloaded in their entirety (compare that to the built up ‘web-apps’ where every bit of content is shuffled in and out by the server). This has been very easy to make and scale. Early versions were one giant wizard scroll I would append new articles to. Since then I’ve added all the beloved front-end nuance.</p>
+<p>My method didn’t changed though. I literally wrote each document by hand using a text editor even as I expanded to a few dozen pages. Old pages fell out of standard, and syndication got tedious (and skipped) as my archive and RSS feed took manual updating per every post.</p>
+<p>My objective was to create a <a href='https://en.wikipedia.org/wiki/Static_site_generator'>static site generator</a> that can preserve and populate my content (prose and hypertext writing) with clean uniform code for other features (navigation bars, metadata etc.). Additionally I would automate the process of updating feeds.</p>
+</section>
 
 <section>
-<p>I am a sophomore mechanical engineering student at Temple University.</p>
-<p>All code here is artisanal and handcrafted. I have no analytics, trackers, cookies, javascript, SEO or anything. Please tell me you were here, and please create your own website.</p>
+<h3>Method</h3>
+<section>
+<h4>Desaturater Script</h4>
+<p>I created a folder of my hand-written pages. I wrote a python script that cuts out everything between a pair of tags, usually ‘article’ or ‘main’. I approved each file processed. Of 30+ files, my code failed twice, requiring manual cleaning. One time was due to a lack of tag wrapping in the original file, the other had mismatched tags (I would use regular expressions now, more on that in ‘Educational Value’). This produced the desaturated content pages made of pure media text. In the future I will write posts directly as these desaturated files.</p>
+<code>
+<pre>
+import os, glob
+
+selectPath = input("path? leave blank for root.")
+
+outputPath = 'desat/' + selectPath
+path = 'handmade/' + selectPath
+
+#for each file in directory 'path'
+for filename in glob.glob(os.path.join(path, '*.html')):
+    with open(os.path.join(os.getcwd(), filename), 'r') as f: # open in readonly mode
+
+        #print the current file
+        os.system('clear')
+
+        print(f.read())
+        f.seek(0)
+
+        #create a word to carve out with. Only works if there is only one set of
+        #splitable tags
+        splitword = input("splitword?, or 's' for skip")
+        if splitword == "s":
+            continue
+
+        #extract everything between the split word tags
+        fraction = f.read().split("&lt" + splitword + "&gt\n")
+        fraction = fraction + fraction[1].split("&lt/" + splitword + "&gt\n")
+        fraction.pop(1)
+        output=fraction[1]
+        
+        os.system('clear')
+        print(output)
+
+        #optionally incase the new content as an article
+        if input("incase in article tages?") == "y":
+            output="&ltarticle&gt\n" + output + "&lt/article&gt\n"
+            
+            os.system('clear')
+            print(output)
+
+        #save to file (optional)
+        if input("save?") == "y":
+            outfile = open(outputPath + vf.name.split("/")[-1], "w")
+            outfile.write(output)
+</pre>
+</code>
+</section>
+
+<section>
+<h4>Resaturater Script</h4>
+<p>I wrote a reverse script that takes all the desaturated articles and appends a template header and footer. These include the functional stuff that every file needs (head, closing tags etc.). There isn’t a reason to differentiate these bummers too much between articles so I standardized them. Visually this process manifests as the new uniform nav bar and footer. Now I can change these standards for all files quickly. The header of a file includes the title (the text on the browser tab) so the saturating script extracts the first (and ideally only) h2 tag of the content and copies it into the header.<p>
+<p>In this code there is a comment about tags messing up the code and clearing them out. That’s because I didn’t know regular expressions yet (more on that later).</p>
+<code>
+<pre>
+import os, glob, re
+
+selectPath = input("path? leave blank for root.")
+outputPath = 'sat/' + selectPath
+path = 'desat/' + selectPath
+headerFile = input("headerfile? Blank for defult. ")
+if headerFile == '':
+    headerFile = "header"
+
+#import template files
+header = open('templates/' + headerFile +'.html').read()
+footer = open('templates/footer.html').read()
+
+#for each file in directory 'path'
+for filename in glob.glob(os.path.join(path, '*.html')):
+    with open(os.path.join(os.getcwd(), filename), 'r') as f: # open in readonly mode
+
+        #extract article title
+        #this curently has the problem of the depreciated 'headline' tag. Running 
+        #this program will clear that. Then I will rebuild the program.
+        splitFile = re.split('&lth2.*?&gt', f.read(), 1)
+        f.seek(0)
+        splitFile = splitFile + re.split('&lt/h2&gt', splitFile[1], 1)
+        splitFile.pop(1)
+        #extract title
+        title = splitFile[1]
+        #reconstruct
+        output = splitFile[0] + "&lth2&gt" + title + "&lt/h2&gt" + splitFile[2]
+
+        #add header and footer templates
+        output = header + output + footer
+
+        #replace title placeholder with extracted title and title template
+        output = output.replace("&lt!--TITLE--&gt", title + ", Hayden Shuker")
+        os.system('clear')
+        print(output)
+
+        #save to file
+        outputPathSpecific = open(outputPath + f.name.split("/")[-1], "w")
+        outputPathSpecific .write(output)
+</pre>
+</code>
+</section>
+
+<section>
+<h4>Updater Script</h4>
+<p>A third script extracts the title of an article and appends it to the various feeds I need to maintain: blog roll, RSS, and archive. This was the last script I wrote and it is visibly more elegant then the others (I made a function).</p>
+<code>
+<pre>
+import os, glob, re
+
+##Inject some text in the middle of a text.
+#insertText is inserted at breakText of rawText
+#breakText is reinserted after if beforeToggle is
+#positive otherwise inserted before
+def insertText(rawText, breakText, insertText, beforeToggle):
+    t = rawText.split(breakText, 1)
+    return t[0] + insertText * beforeToggle +
+     breakText + insertText * (not beforeToggle) + t[1]
+
+directory = 'desat/'
+
+#select a page. Use a desaturated file
+fileToPush = input("Select post to publish: ") + '.html'
+
+##LOAD FILES
+#extract and write title. Use a regular expression to find it burried in h2
+f = open(directory + fileToPush)
+title = re.search(r"&lth2.*?&gt(?P&lttitle&gt.*?)&lt/h2&gt", f.read())['title']
+url = 'https://www.haydenshuker.com/'+ fileToPush
+f.close()
+
+rss = 'desat/rss.xml'
+rssAppendText = '\n&ltitem&gt\n&lttitle&gt' + title + '&lt/title&gt\n '+ '&ltlink&gt' + url + '&lt/link&gt\n&lt/item&gt\n'
+rssText = insertText(open(rss).read(),'&lt/channel&gt', rssAppendText, True)
+print(rssText)
+if input("save new rss Text? y/N") == "y":
+    open(rss, "w").write(rssText)
+
+blog = 'desat/blog.html'
+blogAppendText = '&lt/heading&gt\n\n&ltarticle&gt\n&lth2&gt' + title + '&lt/h2&gt\n&lt/article&gt'
+blogText = insertText(open(blog).read(), '&lt/heading&gt', blogAppendText, False)
+print(blogText)
+if input("save new blog Text? y/N") == "y":
+    open(blog, "w").write(blogText)
+
+archive = 'desat/archive.html'
+archiveAppendText = '\n&ltli&gt&lta href=\'' + fileToPush + '\'&gt' + title +'&lt/a&gt&lt/li&gt'
+archiveText = insertText(open(archive).read(), '&lth4&gt2024&lt/h4&gt\n&ltul&gt', archiveAppendText, False)
+print(archiveText)
+if input("save new archive Text? y/N") == "y":
+    open(archive, "w").write(archiveText)
+</pre>
+</code>
+</section>
+</section>
+
+<section>
+<h3>Future</h3>
+<p>Now updating the site takes the use of two scripts, plus a some manual copying for the new RSS and other non-HTML files. A completed tool could cut that down to a single combined action. The text splicing code I made could be repurposed for other mass editing actions such as updating hyperlinks and fixing HTML formatting. A similar tool could process my images and other files to decrease file size.</p>
+<p>Furthermore, I could make the updater script syndicate to proprietary social media and industrial printing press.</p>
+</section>
+
+<section>
+<h3>Lessons</h3>
+<blockquote cite='http://permacomputing.net/Principles/'><p>Accumulate wisdom and experience rather than codebase.</p>
+<cite><a href='http://permacomputing.net/Principles/'>Permacomputing Principles</a></cite>
+</blockquote>
+
+<p>Some programming firsts for me were:</p>
+<ul>
+<li>Using regular expressions (more on that later)</li>
+<li>Manipulating files with code</li>
+<li>Running Linux commands with code (just clear screen for now but this could be useful)</li>
+<li>Writing code offline with a <a href='https://docs.python.org/3/download.html'>downloaded reference text</a>.</li>
+<li>Making an actually useful backend helper tool (I used to make games and toys).</li>
+<li>Thorough code documentation and commenting (for a non school project).</li>
+</ul>
+<p>With these I could do some real fundamental IT stuff. My heart is open for more projects.</p>
+
+<section>
+<h4>Regular Expressions</h4>
+<p>Apparently text manipulation sucks entirely if you can’t be <a href='https://en.wikipedia.org/wiki/Regular_expression'>fuzzy with it</a>. Until I parsed how to use these all my text cuts would be at risk for error if I left in extra spacing or something. Now that I these I see them everywhere.</p>
+</section>
+
+<section>
+<h4>On Documentation</h4>
+<p>I like to write software like I would an essay. I outline the whole structure, imagine what thing I’m trying to create in its entirety, then the details just flow into place. For software this means comments then code. I learned this method doing the MATLAB projects in engineering class. The documentation and formality isn’t for anyone other than me while I construct the code. Though when I am done, I have chewed up every idea I’ve expressed to my greatest extent. Does documenting make me learn more? So long as it makes me make more.</p>
+</section>
+
+<section>
+<h4>Learning While Writing</h4>
+<p>As this was my first python project, I got dramatically better at writing python code as I wrote it. This created an awkward tendency to write in circles, cleaning up my output and redoing it to better standard. The mental game in such a project is sitting still and powering forward. The whole phase must be executed at once and quality may be judged afterward. Some bad code is better than no good code.</p>
+</section>
+
+<section>
+<h4>Additionally</h4>
+<p>I like my styling optional or interchangeable. That means using the human readable sematic HTML components to make the content thick and signposted in the HTML rather than sloppy prose and intention dressed up with information buried in the ethereal CSS. Use the <a href='https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements'>layered headings earnestly</a> and wrap everything in articles, sections and mains.</p>
+<p>Website footers are for fine print (technical info, organizational info, contacts etc). I know that if I need something serious and practical, that’s where convention dictates it will be.</p>
+</section>
+</article>
+<heading>
+<h2 class='headline'>Compiled Updates Of Early 2024</h2>
+</heading>
+
+<article>
+<h3 id=24>Web Fixin</h3>
+<p><time datetime="2024-07-13">July 13th, 2024</p>
+<section>
+<ul>
+<li>Fixed the HTML of my major pages to better follow <a href="https://html.spec.whatwg.org/dev/sections.html?ref=blog.shimin.io#the-h2,-h3,-h4,-h5,-h6,-and-h6-elements">standards</a> and organize. Theres a kind of satisfaction in this.</li>
+<ul>
+<li>single h2 per page<l1>
+<li>properly divided articles and sections</li>
+<li>better use of main tag</li>
+</ul>
+</ul>
+</section>
+</article>
+
+<article>
+<h3 id=u21>Store Open</h3>
+<p><time datetime="2024-7-10">July 10th, 2024</p>
+<p><a href="articles/b13.html">Proper blog post!</a></p>
+<p>No post yesterday becuase I had a long evening.</p>
+<ul>
+<li>I opened a <a href="store.html">store page</a> for my electronics.</li>
+<li>I opened a proper email for this site! <a href="mailto:contact@haydenshuker.com">contact@haydenshuker.com</a></li>
+<li>Documented email on <a href="articles/computing.html">computing tips</a>.</li>
+</ul>
+</article>
+
+<article>
+<h3 id=u20>5th July Post</h3>
+<p><time datetime="2024-7-8">July 8th, 2024</p>
+
+<article>
+<h4>Bug Poem</h4>
+<p>I brushed a beetle from my hair.<br>
+As it flew away, I stomped it back to my floor.<br>
+It was lightning bug still glowing.</p>
+<article>
+
+</article>
+
+<article>
+<h3 id=u19>I've got errectile disfuction but for blogging</h3>
+<p><time datetime="2024-7-7">July 7th, 2024</p>
+<p>I need viagria (ideas) to get hard (writing)</p>
+</article>
+
+<article>
+<h3 id=u19>I've Got Nothing Today</h3>
+<p><time datetime="2024-7-6">July 6th, 2024</p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=EtapU5nI6G4">nevermind in mario 64 soundfont</a></li>
+</ul>
+</article>
+
+<article>
+<h3 id=u18>2nd Daily Post</h3>
+<p><time datetime="2024-7-5">July 5th, 2024</p>
+<p>After the giga-depression we are going to learn the banks were leveraged 30 times over on bitcoin dirivitives and everyone's 401k was secretly apes.</p>
+<ul>
+<li><a href="https://berksmountainbiking.org/">Berks MTB Association</a></li>
+<li><a href="https://en.wikipedia.org/wiki/List_of_hypothetical_technologies">Goofy list of hypothetical technologies</a></li>
+</ul>
+</article>
+
+<article>
+<h3 id=u17>Happy 4th of July</h3>
+<p><time datetime="2024-7-4">July 4th, 2024</p>
+<p>I'm going to post everyday this month like my friend clayton does with his great <a href="https://claytonhickey.me/blog/language-learning-log-week-7/">nothing posts</a>.</p>
+<p>I finaly fixed my bike so I added bike shops to <a href="links.html">links</a></p>
+<p>I liked these videos:</p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=ByiwvWN4_NA">Disco Elysium art guy explains visual art at basic level for stupid people</a></li>
+<li><a href="https://www.youtube.com/watch?v=QHigcXE9ZzE">real urban planner twitter communist fights fake urban planners twitter communists.</a></li>
+<li><a href="https://www.youtube.com/watch?v=tlVbzuARvh0">HOW TO DO CHICAGO FOOTWORK</a></li>
+</ul>
+</article>
+
+<article>
+<h3 id=u16>Update #16</h3>
+<img src="images/fuck-this-job.webp">
+<p><time datetime="2024-6-12">June 12, 2024</p>
+<p>You can't do a good job at a bad job. I knew hardwork, she beat the shit out of me. If I worked as hard as I don't, I would live a crazy life. The worst jobs let you get away with three hours of sleep. I think some people like being told what to do. Recently I weedwacked a barbed wire fence, and mowed the underside of the bleachers. My time was so wasted I'm its designated driver.</p>
+<p>A reoccoring theme with me (I) here (<a href="https://haydenshuker.com">haydenshuker.com</a>) is withdrawing, quitting and bailing. Its like I'm runnng through the forest with no guidence other than dubious erie figures hidden among the braches who chase me from the fog. "Follow your genius" they say as if my genius was conspicuous. Plus I've got all these figures on me.</p>
+<ul>
+<li><a href="downloads/test-video-please-ignore.mp4">test video please ignore</a></li>
+<li><a href="downloads/test-video-please-ignore-2.mp4">test video please ignore 2</a></li>
+<li>Updated <a href="links.html">Links</a>. I'm a serial bookmarker.</li>
+<li>Updated <a href="index.html">Home</a>. I got my own toki pona name wrong. I'm 'enson', not 'lison'</li>
+<li>Wrote a third <a href="articles/gazebo-poems.html#3">Gazebo Poem</a></li>
+</ul>
+</article>
+
+<article>
+<h3 id=u15>Update #15</h3>
+<p><time datetime="2024-5-26">May 26, 2024</p>
+<p>I asked my friend what standard of quality I should publish and he said "you have a standard?"</p>
+<ul>
+<li>Updated <a href="links.html">Links</a></li>
+</ul>
+</article>
+
+<article>
+<h3 id=u14>Update #14</h3>
+<p><time datetime="2024-5-10">May 10, 2024</p>
+<p>We did another <a href="https://www.youtube.com/watch?v=1pxqbvYXWxI">Sketch</a></p>
+<ul>
+  <li>Put back the evergreen <a href="links.html">Links page</a></li>
+  <li>Added <a href="articles/documentation.html">Documentation</a> about this site</li>
+</ul>
+</article>
+
+<article>
+<h3 id=u13>Update #13: Public Writing and My New Computer</h3>
+<p><time datetime="2024-5-10">May 10, 2024</p>
+<p>I wrote about <a href="articles/b11.html">Public Writing</a>.</p>
+<p>I also wrote about <a href="articles/b12.html">My Computer Again</a>.</p>
+<p>This summer, I'm trying to rot a little less by letting myself engage with my hobbies in the lowest and least valuble ways. Like during lent I got off youtube partially by not beating myself up for switching to a lesser vice (Bloons Tower Defence). I would rather write slowly and unprofound niche hobbist articles than scroll instagram.</p>
+</article>
+
+<article>
+<h3 id=u12>Update #12</h3>
+<p><time datetime="2024-5-1">May 4, 2024</p>
+<p>I got a job! Its a government job too bringing my public streak to potentially 4 years.</p>
+<p>Outdoor, manual, wake up at 5am labor. I'll probably need a bigger hat. I've got a friend who works landscaping and he says its what made him musculer. This could be huge.</p>
+<ul>
+<li>I'm wrote down <a href="articles/wttyaes.html">What they teach you at engieering school</a>. It's about what you would expect.</p>
+<li>I deleted some CSS that turned the <a href="archive.html">archive</a> page into a little two collum display. I just didn't want to maintain that.</li>
+<li><a href="https://www.youtube.com/watch?v=f_MZNsEqyQw</ul">new jon bois</a></li>
+</article>
+
+<article>
+<h3 id=u11>Update #11</h3>
+<p><time datetime="2024-5-1">May 1, 2024. Happy May Day!</p>
+<p>I went to Ambler, there was this greenhouse:</p>
+<img src="images/ambler-greenhouse-headhouse.JPG">
+<img src="images/ambler-greenhouse-purple-door.JPG">
+<img src="images/ambler-greenhouse-inside.JPG">
+<p>I want my life to look like this, the white walls and industrial finishes flushed with green. Its a room of cold, dead machines tending to plants too alive to fit the space. On the other end I imagine that botanist honing in the timing for the sprinkler system as if it kept themself alive. I felt that authorship.</p>
+<ul>
+  <li>The youtube RSS thing still works. I fixed it in <a href="articles/computing.html">Computing tips</a> and I added another one. I wish I could give a massive pile of little information bites, but really what is a tip other than a documentation hole.</li>
+</ul>
+</article>
+
+<article>
+<h3 id=u10>Update #10</h3>
+<p><time datetime="2024-4-28">April 28, 2024</p>
+<ul>
+  <li><a href="https://www.heathershuker.com/">My mom</a> wrote and explained 42 weight loss stratagies. Any day now I'll inherent her tenacity.</li>
+  <li>My friend <a href="https://claytonhickey.me/blog/handling-comments-attempt-2/">Clayton is playing the SEO game</a>. If you are large and reputable please link to his site.</li>
+  <li>Added some better nav stuff & toki pona signature</li>
+  <li>Found this Tree IDing guide: <a href="https://www.envirothonpa.org/documents/TreeID.pdf">PA Tree IDing</a>. I'm looking to up my botany.</li>
+  <li>The trick for getting RSS feeds of youtube broke. I removed that from <a href="articles/computing.html">Computing tips</a></li>
+</ul>
+</article>
+
+<article>
+<h3>With flying colors</h3>
+<p><time datetime="2024-4-22">April 22, 2024</p>
+<p>I aced the test! I am now certified in expencive french CAD software. Passing the solidworks test means getting 80/120 for both parts. I got 120 twice. I was fully expecting my first attempt to be a wash. My spacial reasoning skills are now insane and I know the density of several types of steel.</p>
+<p>I also got some computer parts. <a href="articles/b10.html">I wrote about my computer</a></p>
+</article>
+
+<article>
+<h3>Open Game Development!</h3>
+<p><time datetime="2024-4-10">April 10, 2024</p>
+  <p>After game engine unity screwed everybody, it looks like <a href="https://www.youtube.com/watch?v=krDFltgjLtE&themeRefresh=1">Slay the Spire 2</a> Will be the first big-deal game made with open source engine <a href="https://godotengine.org/">Godot</a>. Maybe this shifts the needle on an entire software category; who knows. It's a good deal for everyone. The game studios don't need to deal with unity, so they get more money so they have less of a need to screw us over. Unity dies, but they're assholes so nobody gives a shit. The question then is who pays for the maintenance of Godot? Ideally the studios but that puts them all in a giant prisoner's dilemma. Then really ideally the state pays for it, but not really because making things is super cheap when all the workers are doing it for the common good and there are no middlemen or rent-seekers to pay. If godot gets captured and privatized into being a new Unity, we can expect them to get decadent and die too.</p>
+  <p>I would like to then also shout out <a href="https://motiontwin.com/">Motion Twin</a>, the creators of Dead Cells for running for over two decades as a worker's co-op. I love france.</p>
+<article>
+
+<article>
+<h3>Something off my chest</h3>
+<p>temple participates in lockhead martin's <a href="https://engineering.temple.edu/news/2023/03/engineering-and-fox-students-collaborate-lockheed-martin%E2%80%99s-ethics-engineering">ethics in engieering competition</a>. They also sponsor the robotics club. I denounce the non-coerced involved.</p>
+</article>
+
+<article>
+<h3>Blog #9: Various Ideas</h3>
+<p><time datetime="2024-3-12">March 12, 2024</p>
+<p><a href="articles/b9.html">Readable Here</a></p>
+</article>  
+
+<article>
+<h3>Shillington Parks</h3>
+<p><time datetime="2024-3-8">March 8, 2024</time></p>
+<p><a href="articles/b8-shillington-parks.html">Readable Here</a></p>
+<p>It has come to my attention that my blog/essay distinction is meaningless because as a blog these are all blogs. Sorry about that. I'm keeping the numbering though just for my own amusement. I haven't been working on that RPG thing I promised so expect some rushed slop.</p>
+</article>
+
+<article>
+<h3>Essay #6: D&D Combat</h3>
+<p><time datetime="2024-3-5">March 5, 2024</time></p>
+<p><a href="articles/e6-D&D-Combat.html">Readable here</a></p>
+<p>I broke my RSS sorry about that.</p>
+</article>
+
+<article>
+<h3>Update #9: Lenten Progress</h3>
+<p><time datetime="2024-3-1">March 1, 2024</time></p>
+<p>I had a conversation with Jesus and he told me everybody in college needs instagram because that's where everybody talks. So we came to the agreement that I can use it only for messaging. To prove I’m serious I’m giving up podcasts too.</p>
+<p>Lent is working for me. I’ve actually got more time. I’m working on a role playing game project. I’ll try to get the little minimum prototype out by the end of break (I’m saying this publicly so my pedantic friend who reads this keeps me accountable). Then I will abandon it forever.</p>
+</article>
+
+<article>
+<h3>Essay #4 Part #3: Graphic Design</h3>
+<p><time datetime="2024-2-18">Febuary 18, 2024</time></p>
+<p><a href="articles/e4p3-graphic-design.html">Readable here</a></p>
+<p>This is the final part of Essay #4, a series I wrote <i>Great Expectations</i> style finding a love for graphic design.</p>
+</article>
+
+<article>
+<h3>Essay #5: Brief Uninformed Tour of Math</h3>
+<p><time datetime="2024-2-17">Febuary 17, 2024</time></p>
+<p><a href="articles/e5-brief-uninformed-tour-of-math.html">Readable here</a></p>
+<p>Less than half a week into lent and I’m off youtube in favor of wikipeda. It’s like I’m making dumb internet content just for myself. This isn't much better.</p>
+</article>
+
+<article>
+<h3>Update #8: Lenten Sacrifice</h3>
+<p><time datetime="2024-2-16">Febuary 16, 2024</time></p>
+<p>This Lent I’m giving up instagram, reddit, youtube and grain foods. Apologies to Jesus for not getting this out quicker. Dare I say devil do not tempt me! If you message me on instagram I will NOT reply.</p>
+</article>
+
+<article>
+<h3>Essay #4 Part #2: Typography</h3>
+<p><time datetime="2024-2-13">Febuary 13, 2024</time></p>
+<p><a href="articles/e4p2-typography.html">Readable here</a></p>
+<p>I like typography but I’m not trying to make that anybody’s problem.</p>
+</article>
+
+<article>
+<h3>Essay #4 Part #1: Web Design Notes</h3>
+<p><time datetime="2024-2-5">Febuary 5, 2024</time></p>
+<p><a href="articles/e4p1-webdesign-notes.html">Essay #4 Web Design Notes</a></p>
+<p>I wrote this complaint about bloated web design for the temple race car club marketing department. I want to publish it properly but it still feels unfinished. I've authored it as a dangling part one to represent that.</p>
+<p>I feel a sort of kinship with this guy.</p>
+<img src="images/engineer-monkey.jpg" alt="engieer monkey bloonsTD6">
+</article>
+
+<article>
+<h3>Update #7: Giga Content Drop</h3>
+<p><time datetime="2024-1-23">January 23, 2024</time></p>
+<p>I was working on differential equations and they had this tutorial video so <a href="downloads/given-initial-conditions.flac">I made it awesome</a>. Hope you like it!</p>
+<ul>
+<li>Updated <a href="articles/software.html">software recomendations</a> with hate and negitivity</li>
+<li>Updated <a href="articles/links.html">links</a> with hate and negitivity</li>
+</ul>
+</article>
+
+<article>
+<h3>Blog #7: Barbie Dreamhouse Imagination</h3>
+<p><time datetime="2024-1-21">January 21, 2024</time></p>
+<p>Writing is bleeding onto the page and I have low iron. <a href="articles/b7.html">Readable here</a></p>
+</article>
+
+<article>
+<h3>Blog #6: Complete Redesign</h3>
+<p><time datetime="2024-1-13">January 13, 2024</time></p>
+<p><a href="articles/b6.html">Readable here</a></p>
+</article>
 </section>
 
 <article>
-<h2>Store</h2>
-<p><a href="store.html">I am selling some used electronics.</a> They are cheaper than going rates.</p>
+<h2 class='headline'>Room Clean</h2>
+<p><time datetime="2024-07-12">July 12th, 2024</p>
+<section>
+<p>I cleaned my room. Not an impressive activity but most aren't. I’ve got a whole month to post. Not everyday can be an excursion.</p>
+<p>This isn’t an epic moment from a domestic perspective ether. I just took this room from fine to good. If I mopped too that could have been something.</p>
+<p>Anyway I’ve been thinking about the room as a shrine. Literally and religiously. I drew this hex sign to ward off evil from my website.</p>
+<img src="images/hex-sign.webp">
+<p>I’m okay with other places having more evil than this room. It proves at least that I’ve done something here. Everyone’s finite power and responsibility and all. I need to find some quality charms and artifacts. No dubious ones sent again by treacherous demons. Engineers have a tendency to take soul damage. I believe this is because WD40 dissolves aether. In any case I must take proper precautions.</p>
+<p>I have this tendency to fall into overly formal commercial habits. That's the engineer brain. For example, I keep a set of yearly journals dating back to middle school. They came with spine labels which I used as a library would with years, descriptions, and even myself written in as the author. My ugly handwriting was screaming at me. I don’t need that level of formal archival. These books grew from my body like hair. I know each one in fine temporal detail. These things were my life back in each of their times. So I removed the labels. Now the shelf is a nice series of colors like a weird washed out flag pride flag.</p>
+</section>
+<ul>
+<li>Added some more <a href="links.html">links</a></li>
+<li>Made a new PFP for instagram. Cyber-DIY compressionpunk. I plan on bringing the new image here.</li>
+<li>I also plan on expanding my wiki/non-fiction/non-personal works. Give this town its rightful documentation.</li>
+<li>I write this to say, ask me how my projects are going.</li>
+</ul>
+</article>
+<article>
+<h2 class='headline'>Mohnton Bunny Boy</h2>
+<p><time datetime="2024-07-11">July 11th, 2024</p>
+<p>Today I learned how to bunny hop.</p>
+<p>Now the world opens to me, the whole bike skill tree. I could learn to track stand and pair it with my little euro hop and get technical. I could up my power and learn the full J hop and those manuals. I could take my little hop to the trails and learn to use it for real speed for men. I love that about bikes. They are almost a basic archetypal human tool. Its a shame they didn’t get invented earlier. It pairs so well with the human body in ways we explore like the hammer or sword.</p>
+<p>I actually did fencing for a bit. Fencing has no tricks that's the problem with the sport. You can’t flex your fencing kata. Everything you learn has to be against a guy to mean anything, and then your guy goes and does something else and your tricks are ruined. You are bound to your guy, and you are both bound to this rectangle on the ground. You put your thick sweaty white clothes back in the bag and you go home and its like nothing ever happened. Call that practicality, or versatility, transferability, flexibility, fencing has none of them. It is a small little game.</p>
+<p>I have nothing against swords. They encompass the world, you can die by one. Grind and sharpen the blade until there is nothing left and you get ‘modern sport fencing’— a phenomenon split and excreted from the great rich asshole duels us white people used to like.</p>
+<p>So that is my problem. When I’m teaching somebody a skill or hobby I try to stay away from ‘when you’ or ‘once you’ statements. Like “when you practice enough, you’ll be able to…” because those sorts of lines are daunting. Its like looking your entire future in the mouth. Will I stick with this skill enough to practice that thoroughly? Will I find some reason to do this? Do I want to commit to this that long? Will I live that long? Respect the cannon and the commitment, but please don’t toss me into it just yet. Just give me the moment. “Hey kid now you know algebra you can do all kinds of accounting”, not “this will come back in differential equations so you better remember it.”</p>
+</article>
+<article>
+<heading>
+<h2 class='headline'>Bike Trip</h2>
+<p><time datetime="2024-07-10">July 10th, 2024</p>
+</heading>
+<p>Being loud and writing publicly is a lottery ticket printing press. For evidence posting has value, <a href="blog.html#u18">this one post a couple</a> days ago dragged my sorry ass out of the house. I posed a link to <a href="https://berksmountainbiking.org/">BAMBA</a> then my friend Clayton texts me “So we’re riding with them?” and I’m like “yeah.”</p>
+<p>He shows up late because he had to rack his bike, we get late trying to rack my (brothers) bike, and by the time of the ride, we’re too late. He’s got a utility bike that he goes around a billion miles everyday, I’ve got my little brothers entry level hardtail he speced to the moon. I say “maybe we go to the gravel at wyomissing?” He wants to go to the real deal at Mt. Neversink. I already told him his bike would be dubious there, but whatever.</p>
+<img src="images/mtsink-view-dithered.webp">
+<p>We climb, its fun. Eventually we’re turning around because its getting late. We descend for maybe 30 seconds. I drop a water bottle, turn around to pick it up and Claytons missing because he got double flats.</p>
+<img src="images/bikes-flat.webp">
+<p>Were on the ground trying to patch his inner tubes, fortunately his massive utility rack had everything needed to fix it. A guy comes by and offers help. Hes got the Fox logo on him maybe 5 times. We talk about our love of <a href="https://en.wikipedia.org/wiki/Fox">foxes</a>. He says hes a suburban dad and a scientist. He says one time out biking in the Reading urban parks, a methhead accused him of sins he committed while in special forces. He says one time out biking the reading mountains, properly in the woods, a naked man halfheartedly ran away from him without a towel or cloths anywhere in the vicinity. He says one time out biking Schuylkill river trail early in the morning before full sunrise, he saw a weathered man exhausted and dragging a shovel.</p>
+<p>He dosn’t have the kit for Clayton’s non-appropriate bike but he says we’ve got the young adult sprit and we should keep it up. We decline his food. Clayton came prepared— he brought a protein bar. He asked if we brought lights (he brought three), when I say we’ve got none his face flushes. He passes me one out of his backpack strap.</p>
+<img src="images/bike-horror-dithered.webp">
+<p>Waxing crescent, it’s pitch black, Clayton’s phone is dead. His girlfriend calls me, I say hes okay he brought a protein bar. Its not to far of a walk because I really just wanted to talk. We make it back down at about the same time as the father-scientist. Hes a big BAMBA guy, a proclaimed evangelist of the sport. The reading mountain biking side quest tree unlocks.</p>
+<img src="images/mtsink-view-night-dithered.webp">
 </article>
 
-<article>
-<h2>Hire me</h2>
-<p>I'm looking for an engineering internship. Seeking co-op, government, or non-profit positions in that order.</p>
-<p><a href="downloads/hayden-shuker-resume.pdf">Resume Download</a></p>
-<p><a href="https://www.linkedin.com/in/hayden-shuker-99a952292/">LinkedIn</a></p>
-<p>Updated: <time datetime="2024-5-2">May 2, 2024</p>
-</article>
-</article>
-</main>
+
+<p><a href='archive.html'>more</a></p></main>
 <footer>
 <hr>
 <article>
@@ -54,6 +563,7 @@ Reading, PA</p>
   <li><a href="mailto:contact@haydenshuker.com">contact@haydenshuker.com</a></li>
   <li><a href="https://www.instagram.com/hayden.shuker">Instagram</a></li>
   <li><a href="https://www.linkedin.com/in/hayden-shuker-99a952292/">LinkedIn</a></li>
+  <li><a href="rss.xml">RSS</a></li>
 </ul>
 </nav>
 </article>

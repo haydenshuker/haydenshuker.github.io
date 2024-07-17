@@ -17,7 +17,7 @@ margin: 0;
 body{
 max-width: 530px;
 margin: auto;
-padding: 45px 12px 0px 12px;
+padding: 0px 12px 0px 12px;
 display: flex;
 flex-direction: column;
 flex-wrap: wrap;
@@ -65,7 +65,7 @@ margin-bottom: 1.0em;
 }
 article, section{
 margin-bottom: 10px;
-margin-top: 0;
+margin-top: 0px;
 float: left;
 max-width: 850px;
 width:100%;
@@ -73,12 +73,12 @@ width:100%;
 img{
 image-rendering: crisp-edges;
 width: 100%;
-padding-top: 10px;
+margin-top: 10px;
 margin-left: 0;
 margin-right: 0;
 }
 nav{
-margin-top: 0;
+margin: 10px 0 0px 0;
 width: 100;
 }
 nav ul{
@@ -130,4 +130,7 @@ position: relative;
 margin-right: -12px;
 margin-left: 0;
 }
+}
+hr{
+width: 100%;
 }
