@@ -38,6 +38,7 @@ pre{
 margin-top: 50px;
 margin-bottom:30px;
 max-width: 300px;
+overflow: scroll;
 }
 code{
 margin-top: 30px;
