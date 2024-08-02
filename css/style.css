@@ -37,13 +37,11 @@ font-size: 35px;
 pre{
 margin-top: 50px;
 margin-bottom:30px;
-max-width: 300px;
-overflow: scroll;
+max-width: 100%;
 }
 code{
 margin-top: 30px;
 margin-bottom: 30px;
-max-width: 300px;
 font-size: 10px;
 }
 a{
