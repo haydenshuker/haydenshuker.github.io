@@ -1,0 +1,43 @@
+body {
+  background: #ff9966;
+  color: #ffffff;
+  width: 900px;
+}
+img{
+    max-width: 450px
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+  grid-auto-rows: minmax(100px, auto);
+}
+.ceiling {
+  grid-column: 3 / 4;
+  grid-row: 1 / 2;
+}
+.one {
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+}
+.two {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+}
+.three {
+  grid-column: 3/4;
+  grid-row: 2 / 3;
+}
+.four {
+  grid-column: 4/5;
+  grid-row: 2/3;
+}
+.five {
+  grid-column: 5/6;
+  grid-row: 2/3;
+}
+.floor {
+  grid-column: 3/4;
+  grid-row: 3/4;
+}
